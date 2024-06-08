@@ -1,0 +1,35 @@
+from web3 import Web3
+
+# Conectar a un nodo de Ethereum a través de Infura
+infura_url = 'https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID'
+web3 = Web3(Web3.HTTPProvider(infura_url))
+
+# Verificar la conexión
+if web3.isConnected():
+    print("Conectado a Ethereum")
+else:
+    print("Error al conectar a Ethereum")
+
+# Obtener información sobre el bloque más reciente
+latest_block = web3.eth.get_block('latest')
+print(f"Bloque más reciente: {latest_block['number']}")
+
+# Obtener y analizar transacciones del bloque más reciente
+block_number = latest_block['number']
+block = web3.eth.get_block(block_number, full_transactions=True)
+
+print(f"Analizando transacciones en el bloque {block_number}")
+for tx in block['transactions']:
+    print(f"Transacción {tx['hash'].hex()}:")
+    print(f"  De: {tx['from']}")
+    print(f"  A: {tx['to']}")
+    print(f"  Valor: {web3.fromWei(tx['value'], 'ether')} Ether")
+    print(f"  Gas usado: {tx['gas']}")
+
+# Obtener información adicional sobre la blockchain
+block_count = web3.eth.block_number
+total_gas_used = sum(tx['gas'] for tx in block['transactions'])
+total_value_transferred = sum(web3.fromWei(tx['value'], 'ether') for tx in block['transactions'])
+
+print(f"Bloques totales: {block_count}")
+print(f"Total de gas usado en el bloque {block
